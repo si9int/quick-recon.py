@@ -4,6 +4,7 @@
 
 import urllib3, requests, json
 import argparse
+import socket
 from bs4 import BeautifulSoup
 
 parser = argparse.ArgumentParser()
@@ -13,6 +14,23 @@ args = parser.parse_args()
 
 whatcms_token = '756ab2cfa1ed5575a71e0714ef05c2e228f17b6b1476de7075f7f4d6b4978272376fb3'
 domain = args.domain
+
+def getIP():
+	strip = domain.split('/')[-1]
+	ip = socket.gethostbyname(strip)
+	ipinfo = json.loads(requests.get('https://rest.db.ripe.net/search.json?query-string=' + ip).text)
+	result = ipinfo['objects']['object'][0]['attributes']['attribute']
+
+	for i in result:
+		if i['name'] == 'inetnum':
+			range = i['value']
+		if i['name'] == 'netname':
+			netname = i['value']
+		if i['name'] == 'country':
+			country = i['value']
+
+	print('[-] IP Information: ' + ip + ' (' + country + '), ' + netname)
+	print('[-] IP Range: ' + range.replace(' ', ''))
 
 def getOptions():
 	http = urllib3.PoolManager()
@@ -113,6 +131,7 @@ def getInteresting():
 			print('[-] Found interesting file: /' + file)
 
 recon = [
+	getIP,
 	getOptions,
 	getHeaders,
 	getTechnology,
