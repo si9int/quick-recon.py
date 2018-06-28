@@ -32,6 +32,23 @@ def getIP():
 	print('[-] IP Information: ' + ip + ' (' + country + '), ' + netname)
 	print('[-] IP Range: ' + range.replace(' ', ''))
 
+def getIPHistory():
+	strip = domain.split('/')[-1]
+	html = requests.get('http://viewdns.info/iphistory/?domain=' + strip).text
+	soup = BeautifulSoup(html, 'lxml')
+	table = soup.findAll('table', attrs={'border':'1'})[0]
+	trs = table.findAll('tr')
+	trs.pop(0)
+
+	print('[-] IP history:\n--')
+
+	for tr in trs:
+		td = tr.findAll('td')
+		info = {'ip' : td[0].text, 'owner' : td[2].text.rstrip(), 'last' : td[3].text}
+		print('\t' + info['ip'] + ', ' + info['owner'] + ' (' + info['last'] + ')')
+
+	print('--')
+
 def getOptions():
 	http = urllib3.PoolManager()
 	request = http.request('OPTIONS', domain, retries=False, redirect=False)
@@ -132,6 +149,7 @@ def getInteresting():
 
 recon = [
 	getIP,
+	getIPHistory,
 	getOptions,
 	getHeaders,
 	getTechnology,
