@@ -4,7 +4,7 @@ This is very useful if you test a single web-application or domain and don't hav
 
 **Features**
 
-* Retreive the IP adress, location and it's corresponding IP range
+* Retreive the IP adress, location and it's corresponding IP range and IP history
 * Do a HTTP-OPTIONS request to lookup the allowed HTTP methods
 * Print the HTTP-response headers set by the server
 * Get the used technology (webserver, proxy, languages, scriptlanguage, frontend, frameworks) based on: w3techs.com
